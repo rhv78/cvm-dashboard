@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>CVM · Controle</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#090d18;color:#dde2f0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.card{background:#0f1525;border:1px solid #1a2035;border-radius:16px;padding:32px 24px;max-width:400px;width:100%;text-align:center}
+.logo{font-size:13px;font-weight:700;letter-spacing:.1em;color:#1D9E75;text-transform:uppercase;margin-bottom:4px;font-family:'Courier New',monospace}
+.sub{font-size:11px;color:#4a536b;font-family:'Courier New',monospace;margin-bottom:24px}
+.btn-dash{display:block;width:100%;background:#1D9E75;color:#090d18;border:none;border-radius:10px;padding:16px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;margin-bottom:10px}
+.btn-att{display:block;width:100%;background:transparent;color:#378ADD;border:1px solid #378ADD;border-radius:10px;padding:14px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:20px}
+.btn-att:disabled{opacity:.4;cursor:not-allowed}
+.sbox{background:#090d18;border-radius:8px;padding:14px;font-size:12px;font-family:'Courier New',monospace;color:#4a536b;text-align:left;min-height:50px}
+.ok{color:#1D9E75}.err{color:#D85A30}.run{color:#F7B731}
+.spin{display:inline-block;width:10px;height:10px;border:2px solid #1a2035;border-top-color:#F7B731;border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ultima{font-size:10px;color:#4a536b;margin-top:8px;font-family:'Courier New',monospace}
+.fundos{margin-top:20px;text-align:left;border-top:1px solid #1a2035;padding-top:16px}
+.ftitle{font-size:10px;color:#4a536b;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;font-family:'Courier New',monospace}
+.fitem{display:flex;align-items:center;gap:8px;font-size:11px;color:#888;margin-bottom:5px;font-family:'Courier New',monospace}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">📊 Dashboard CVM 2026</div>
+  <div class="sub">ronaldovolkart-collab</div>
+
+  <a href="https://ronaldovolkart-collab.github.io/cvm-dashboard" class="btn-dash">
+    📈 Ver Dashboard
+  </a>
+
+  <button class="btn-att" id="btnAtt" onclick="atualizar()">
+    🔄 Atualizar Dados da CVM
+  </button>
+
+  <div class="sbox" id="sbox">Toque em Atualizar para baixar os dados mais recentes da CVM.</div>
+  <div class="ultima" id="ultima"></div>
+
+  <div class="fundos">
+    <div class="ftitle">Fundos monitorados</div>
+    <div class="fitem"><span class="dot" style="background:#1D9E75"></span>Lagunna_78</div>
+    <div class="fitem"><span class="dot" style="background:#378ADD"></span>Neblina_78</div>
+    <div class="fitem"><span class="dot" style="background:#BA7517"></span>Neblina_Equity_78</div>
+    <div class="fitem"><span class="dot" style="background:#D85A30"></span>EVEREST (encerrado)</div>
+    <div class="fitem"><span class="dot" style="background:#7F77DD"></span>RF CDI</div>
+  </div>
+</div>
+
+<script>
+const OWNER = 'ronaldovolkart-collab';
+const REPO  = 'cvm-dashboard';
+const WF    = 'atualizar.yml';
+const TOKEN = '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';
+
+function set(msg, tipo) {
+  const sp = tipo==='run' ? '<span class="spin"></span>' : '';
+  document.getElementById('sbox').innerHTML = '<span class="'+tipo+'">'+sp+msg+'</span>';
+}
+
+async function atualizar() {
+  document.getElementById('btnAtt').disabled = true;
+  set('Disparando atualizacao...', 'run');
+  try {
+    const r = await fetch(
+      'https://api.github.com/repos/'+OWNER+'/'+REPO+'/actions/workflows/'+WF+'/dispatches',
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': 'token '+TOKEN,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ref: 'main'})
+      }
+    );
+    if(r.status === 204) {
+      set('Atualizacao iniciada! Aguarde ~40 segundos e recarregue o dashboard.', 'ok');
+      setTimeout(() => verificar(), 8000);
+    } else {
+      set('Erro '+r.status+'. Verifique o token.', 'err');
+      document.getElementById('btnAtt').disabled = false;
+    }
+  } catch(e) {
+    set('Erro: '+e.message, 'err');
+    document.getElementById('btnAtt').disabled = false;
+  }
+}
+
+async function verificar() {
+  try {
+    const r = await fetch(
+      'https://api.github.com/repos/'+OWNER+'/'+REPO+'/actions/runs?per_page=1',
+      { headers: { 'Authorization': 'token '+TOKEN, 'Accept': 'application/vnd.github.v3+json' } }
+    );
+    const d = await r.json();
+    const run = d.workflow_runs?.[0];
+    if(!run) return;
+    if(run.status === 'completed') {
+      if(run.conclusion === 'success') {
+        set('Dashboard atualizado com sucesso!', 'ok');
+        document.getElementById('ultima').textContent = 'Ultima atualizacao: ' + new Date(run.updated_at).toLocaleString('pt-BR');
+      } else {
+        set('Erro na atualizacao. Verifique o GitHub Actions.', 'err');
+      }
+      document.getElementById('btnAtt').disabled = false;
+    } else {
+      set('Atualizando... aguarde.', 'run');
+      setTimeout(() => verificar(), 5000);
+    }
+  } catch(e) {}
+}
+</script>
+</body>
+</html>
