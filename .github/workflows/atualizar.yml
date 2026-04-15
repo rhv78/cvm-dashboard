@@ -1,1 +1,42 @@
+name: Atualizar Dashboard CVM
 
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * 1-5"
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Deps
+        run: pip install pandas requests
+
+      - name: Cotas
+        run: python coletar_cotas.py
+
+      - name: Dashboard
+        run: python gerar_dashboard.py
+
+      - name: Publica
+        run: |
+          mkdir -p docs
+          echo "Arquivos HTML encontrados:"
+          find . -name "*.html" | grep -v ".git"
+          HTML=$(find . -name "*.html" | grep -v ".git" | grep -v "controle" | head -1)
+          echo "Usando: $HTML"
+          cp "$HTML" docs/index.html
+          ls -la docs/
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add docs/
+          git commit -m "Dashboard atualizado" || echo "Nada a commitar"
+          git push
