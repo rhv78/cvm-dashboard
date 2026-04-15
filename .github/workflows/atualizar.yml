@@ -1,4 +1,4 @@
-name: Atualizar Dashboard CVM
+
 
 on:
   workflow_dispatch:
