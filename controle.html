@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>CVM Dashboard · Controle</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#090d18;color:#dde2f0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+.card{background:#0f1525;border:1px solid #1a2035;border-radius:16px;padding:32px 28px;max-width:420px;width:100%;text-align:center}
+.logo{font-size:13px;font-weight:700;letter-spacing:.1em;color:#1D9E75;text-transform:uppercase;margin-bottom:4px;font-family:'Courier New',monospace}
+.sub{font-size:11px;color:#4a536b;font-family:'Courier New',monospace;margin-bottom:28px}
+.btn-dash{display:block;width:100%;background:#1D9E75;color:#090d18;border:none;border-radius:10px;padding:16px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;margin-bottom:12px;transition:opacity .2s}
+.btn-dash:hover{opacity:.85}
+.btn-att{display:block;width:100%;background:transparent;color:#378ADD;border:1px solid #378ADD;border-radius:10px;padding:14px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:20px;text-decoration:none;transition:all .2s}
+.btn-att:hover{background:#378ADD22}
+.info{background:#090d18;border-radius:8px;padding:14px;font-size:12px;font-family:'Courier New',monospace;color:#4a536b;text-align:left}
+.info a{color:#378ADD}
+.fundos{margin-top:20px;text-align:left;border-top:1px solid #1a2035;padding-top:16px}
+.ftitle{font-size:10px;color:#4a536b;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;font-family:'Courier New',monospace}
+.fitem{display:flex;align-items:center;gap:8px;font-size:11px;color:#888;margin-bottom:5px;font-family:'Courier New',monospace}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">📊 Dashboard CVM 2026</div>
+  <div class="sub">ronaldovolkart-collab · Rentabilidade dos Fundos</div>
+
+  <a href="https://ronaldovolkart-collab.github.io/cvm-dashboard" class="btn-dash" target="_blank">
+    📈 Ver Dashboard
+  </a>
+
+  <a href="https://github.com/ronaldovolkart-collab/cvm-dashboard/actions/workflows/atualizar.yml"
+     class="btn-att" target="_blank">
+    🔄 Atualizar Dados da CVM
+  </a>
+
+  <div class="info">
+    Para atualizar: clique no botão acima → abre o GitHub Actions → clique em
+    <strong style="color:#dde2f0">"Run workflow"</strong> → <strong style="color:#dde2f0">"Run workflow"</strong>.
+    Em ~2 minutos o dashboard estará atualizado.
+  </div>
+
+  <div class="fundos">
+    <div class="ftitle">Fundos monitorados</div>
+    <div class="fitem"><span class="dot" style="background:#1D9E75"></span>Lagunna_78 · 63.662.461/0001-40</div>
+    <div class="fitem"><span class="dot" style="background:#378ADD"></span>Neblina_78 · 63.110.432/0001-75</div>
+    <div class="fitem"><span class="dot" style="background:#BA7517"></span>Neblina_Equity_78 · 63.105.699/0001-74</div>
+    <div class="fitem"><span class="dot" style="background:#D85A30"></span>EVEREST · encerrado 18/03/2026</div>
+    <div class="fitem"><span class="dot" style="background:#7F77DD"></span>RF CDI · R$ 27.040,55</div>
+  </div>
+</div>
+</body>
+</html>
