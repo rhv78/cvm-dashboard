@@ -26,10 +26,15 @@ jobs:
       - name: Gerar dashboard
         run: python gerar_dashboard.py
 
-      - name: Mover para pasta docs
+            - name: Mover para pasta docs
         run: |
           mkdir -p docs
-          cp output/index.html docs/index.html
+          find . -name "dashboard_cvm_2026.html" | head -1 | xargs -I{} cp {} docs/index.html
+          ls docs/
+
+      
+          
+    
 
       - name: Commit dashboard
         run: |
