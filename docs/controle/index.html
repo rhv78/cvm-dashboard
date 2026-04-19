@@ -59,7 +59,7 @@ main{padding:22px 28px;max-width:1300px;margin:0 auto}
     <div class="logo">&#128202; Dashboard CVM &middot; Rentabilidade 2026</div>
     <div class="sub" id="headerSub"></div>
   </div>
-  <div class="gerado">Gerado em 18/04/2026 17:49</div>
+  <div class="gerado">Gerado em 18/04/2026 22:04</div>
 </header>
 <main>
   <div class="slbl">Resumo da carteira</div>
@@ -132,7 +132,7 @@ document.getElementById('headerSub').textContent =
     {lbl:'Patrimonio atual',   val:fmtBRL(T.fim),   sub:'em '+T.dt_fim, cls:''},
     {lbl:'Resultado R$', val:(T.ganho>=0?'+':'')+fmtBRL(T.ganho), sub:fmtPct(pct)+' no periodo', cls:T.ganho>=0?'pos':'neg'},
     {lbl:'Rent. carteira', val:fmtPct(T.cart_rent), sub:'consolidado no periodo', cls:T.cart_rent>=0?'pos':'neg'},
-    {lbl:'CDI acumulado', val:fmtPct(T.rf_rent), sub:'jan–'+T.dt_fim.slice(0,7), cls:'pos'},
+    {lbl:'CDI acumulado', val:fmtPct(T.rf_rent), sub:T.dt_fim, cls:'pos'},
   ].forEach(c=>{
     document.getElementById('summaryCards').innerHTML +=
       `<div class="card"><div class="lbl">${c.lbl}</div><div class="val ${c.cls}">${c.val}</div><div class="sub">${c.sub}</div></div>`;
