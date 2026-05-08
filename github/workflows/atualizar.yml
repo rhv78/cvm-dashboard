@@ -1,0 +1,39 @@
+name: Atualizar Dashboard CVM
+
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: "30 9 * * 1-5"   # 06:30 BRT (UTC-3)
+  - cron: "30 12 * * 1-5"  # 09:30 BRT (UTC-3)
+
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Deps
+        run: pip install pandas requests
+
+      - name: Cotas
+        run: python coletar_cotas.py
+
+      - name: Verifica CSV
+        run: ls -la output/ && wc -l output/cotas_fundos_2026_consolidado.csv
+
+      - name: Dashboard
+        run: python gerar_dashboard.py
+
+      - name: Verifica HTML
+        run: ls -la output/
+
+      - name: Publica
+        run: |
+          mkdir -p docs/​​​​​​​​​​​​​​​​
