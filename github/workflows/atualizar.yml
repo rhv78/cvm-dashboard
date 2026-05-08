@@ -36,4 +36,11 @@ jobs:
 
       - name: Publica
         run: |
-          mkdir -p docs/​​​​​​​​​​​​​​​​
+          mkdir -p docs/controle
+          cp output/index.html docs/index.html
+          cp output/index.html docs/controle/index.html
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add docs/
+          git commit -m "Dashboard atualizado $(date -u +%Y-%m-%d' '%H:%M' UTC')" || echo "Nada a commitar"
+          git push
