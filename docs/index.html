@@ -50,6 +50,16 @@ main{padding:22px 28px;max-width:1300px;margin:0 auto}
 .pie-wrap{display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:center}
 .pie-info{display:flex;flex-direction:column;gap:10px}
 .pie-row{display:flex;align-items:center;gap:10px;font-size:12px}
+.aviso{background:#1d1409;border:1px solid #6b4a12;border-left:3px solid #BA7517;border-radius:8px;padding:14px 16px;margin-top:18px}
+.av-top{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;color:#E0A040;letter-spacing:.04em}
+.av-txt{font-size:11px;color:#b9a882;margin-top:6px;line-height:1.6}
+.av-lista{list-style:none;margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.av-lista li{font-size:11px;font-family:'IBM Plex Mono',monospace;color:#c9b58f;display:flex;align-items:center;gap:7px}
+.av-sq{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.av-previa{margin-top:12px;padding-top:10px;border-top:1px dashed #6b4a12}
+.av-previa-lbl{font-size:9px;color:#9a8a6a;text-transform:uppercase;letter-spacing:.08em;font-family:'IBM Plex Mono',monospace}
+.av-previa-vals{display:flex;flex-wrap:wrap;gap:16px;margin-top:5px;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600}
+.av-previa-nota{font-size:10px;color:#8c7c5e;margin-top:6px;line-height:1.6}
 @media(max-width:600px){main{padding:14px}header{padding:12px 14px}.pie-wrap{grid-template-columns:1fr}}
 </style>
 </head>
@@ -59,9 +69,10 @@ main{padding:22px 28px;max-width:1300px;margin:0 auto}
     <div class="logo">&#128202; Dashboard CVM &middot; Rentabilidade 2026</div>
     <div class="sub" id="headerSub"></div>
   </div>
-  <div class="gerado">Gerado em 04/09/2026 14:07 &nbsp;·&nbsp; Última publicação CVM: 2026-08-31</div>
+  <div class="gerado">Gerado em 04/09/2026 14:42 &nbsp;·&nbsp; Última publicação CVM: 2026-08-31</div>
 </header>
 <main>
+<div class="aviso"><div class="av-top">&#9888;&#65039; Dados parciais &mdash; consolidado congelado em 31/08/2026</div><div class="av-txt">A CVM ja publicou ate 01/09/2026, mas 1 fundo ainda nao entregou o informe. O total da carteira so avanca quando todos publicarem.</div><ul class="av-lista"><li><span class="av-sq" style="background:#1D9E75"></span><b>Lagunna_78</b> &mdash; ultimo informe em 31/08/2026</li></ul><div class="av-previa"><div class="av-previa-lbl">Previa em 01/09/2026 &mdash; parcial, nao oficial</div><div class="av-previa-vals"><span>R$ 369.164,35</span><span class="pos">+5.6423%</span><span class="pos">+R$ 19.734,16</span></div><div class="av-previa-nota">Os fundos sem informe entram com o ultimo patrimonio conhecido, entao contribuem com 0% de variacao no periodo em aberto. O numero tende a subestimar a carteira.</div></div></div>
   <div class="slbl">Resumo da carteira</div>
   <div class="cards" id="summaryCards"></div>
 
