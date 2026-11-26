@@ -69,7 +69,7 @@ main{padding:22px 28px;max-width:1300px;margin:0 auto}
     <div class="logo">&#128202; Dashboard CVM &middot; Rentabilidade 2026</div>
     <div class="sub" id="headerSub"></div>
   </div>
-  <div class="gerado">Gerado em 26/11/2026 15:02 &nbsp;·&nbsp; Última publicação CVM: 2026-11-24</div>
+  <div class="gerado">Gerado em 26/11/2026 15:26 &nbsp;·&nbsp; Última publicação CVM: 2026-11-24</div>
 </header>
 <main>
 
@@ -84,7 +84,7 @@ main{padding:22px 28px;max-width:1300px;margin:0 auto}
       <button class="tab"        onclick="setTab('diario')">Variacao diaria %</button>
     </div>
     <div class="legend" id="legend"></div>
-    <div style="position:relative;width:100%;height:300px">
+    <div style="position:relative;width:100%;height:400px">
       <canvas id="mainChart" role="img" aria-label="Grafico de evolucao dos fundos em 2026"></canvas>
     </div>
   </div>
@@ -155,9 +155,29 @@ document.getElementById('headerSub').textContent =
               sub:T.cc_modo==='neutro'?'fora da rentabilidade (bruta)':'descontado da rentabilidade', cls:'neg'});
   cards.push(
     {lbl:'Resultado R$', val:(T.ganho>=0?'+':'')+fmtBRL(T.ganho), sub:T.resg>0?'ja considera os resgates':'no periodo', cls:T.ganho>=0?'pos':'neg'},
-    {lbl:'Rent. carteira', val:fmtPct(T.cart_rent), sub:T.cc>0?'bruta, sem efeito do IR':(T.resg>0?'ajustada por fluxo de caixa':'consolidado no periodo'), cls:T.cart_rent>=0?'pos':'neg'},
-    {lbl:'CDI acumulado', val:fmtPct(T.rf_rent), sub:T.dt_fim, cls:'pos'},
   );
+  // Rentabilidade da carteira na semana, no mes e no ano (indice TWR, ja
+  // neutraliza aportes/resgates). Base = ultimo dia antes do inicio do periodo.
+  const fim = T.dt_fim;
+  const iso = d => d.toISOString().slice(0,10);
+  const dF  = new Date(fim+'T12:00:00Z');
+  const seg = new Date(dF); seg.setUTCDate(dF.getUTCDate() - ((dF.getUTCDay()+6)%7));   // segunda-feira
+  const ini_sem = iso(seg), ini_mes = fim.slice(0,8)+'01', ini_ano = fim.slice(0,5)+'01-01';
+  function rentPer(arr, dtIni){
+    const v = arr.filter(h=>h.dt<=fim);
+    if(!v.length) return null;
+    const ult = v[v.length-1];
+    const base = [...v].reverse().find(h=>h.dt<dtIni) || v[0];
+    return ((1+ult.rent_acum/100)/(1+base.rent_acum/100)-1)*100;
+  }
+  const br = d => d.slice(8,10)+'/'+d.slice(5,7);
+  [['Rent. semana', ini_sem, 'desde '+br(ini_sem)],
+   ['Rent. mês',    ini_mes, 'desde '+br(ini_mes)],
+   ['Rent. ano',    ini_ano, T.cc>0?'bruta, sem efeito do IR':'ajustada por fluxo de caixa']].forEach(([lbl,dt,txt])=>{
+    const rc = rentPer(CART, dt), rcdi = rentPer(RF, dt);
+    if(rc===null) return;
+    cards.push({lbl, val:fmtPct(rc), sub:txt+' · CDI '+fmtPct(rcdi), cls:rc>=0?'pos':'neg'});
+  });
   cards.forEach(c=>{
     document.getElementById('summaryCards').innerHTML +=
       `<div class="card"><div class="lbl">${c.lbl}</div><div class="val ${c.cls}">${c.val}</div><div class="sub">${c.sub}</div></div>`;
@@ -177,12 +197,12 @@ const ULTIMA_DT = TOTAIS.dt_fim;
 
 const CARTV = CART.filter(h=>h.dt<=ULTIMA_DT);
 // Marcadores nos dias em que houve resgate (laranja) ou aporte (verde)
-const MK_R = CARTV.map(h=>(h.resg>0||h.capt>0||h.cc>0)?4.5:0);
+const MK_R = CARTV.map(h=>(h.resg>0||h.capt>0||h.cc>0)?2.5:0);
 const MK_C = CARTV.map(h=>h.resg>0?'#D85A30':(h.capt>0?'#1D9E75':(h.cc>0?'#7F77DD':'rgba(0,0,0,0)')));
 
 function getDS(tab){
   const key = tab==='acum'?'rent_acum':tab==='patrim'?'patrimonio':'var_diaria';
-  const marca = {pointRadius:MK_R,pointHoverRadius:MK_R.map(r=>r?7:0),pointBackgroundColor:MK_C,pointBorderColor:MK_C};
+  const marca = {pointRadius:MK_R,pointHoverRadius:MK_R.map(r=>r?5:0),pointBackgroundColor:MK_C,pointBorderColor:MK_C};
   if(tab==='patrim'){
     return [
       Object.assign({label:'Carteira Total',data:CARTV.map(h=>h[key]),borderColor:TOTAIS.cart_color,backgroundColor:TOTAIS.cart_color+'18',fill:true,borderWidth:3,tension:0.1},marca),
@@ -220,7 +240,7 @@ function renderMain(tab){
       }}},
       scales:{
         x:{ticks:{autoSkip:true,maxTicksLimit:10,color:'#8892a8',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'}},
-        y:{ticks:{color:'#8892a8',font:{size:10},callback:v=>fmtY(tab,v)},grid:{color:'rgba(255,255,255,0.04)'}},
+        y:{ticks:{color:'#8892a8',font:{size:12},callback:v=>fmtY(tab,v)},grid:{color:'rgba(255,255,255,0.04)'}},
       },
     },
   });
